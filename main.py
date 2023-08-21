@@ -1,5 +1,7 @@
 import arcade
 import math
+
+import pymunk
 from game_object import Archer, Target, ArrowSprite
 
 WIDTH = 800
@@ -19,6 +21,8 @@ class App(arcade.Window):
         self.end_x = 0
         self.end_y = 0
         self.angle = 0
+        self.space = pymunk.Space()  # Crear el espacio de pymunk
+        self.space.gravity = (0, -900)
 
     def on_draw(self):
         arcade.start_render()
@@ -30,6 +34,7 @@ class App(arcade.Window):
         self.arrow_group.draw()
     
     def on_update(self, delta_time):
+        self.space.step(1 / 60.0)
         self.arrow_group.update()
         
     def on_mouse_press(self, x, y, button, modifiers):
@@ -52,9 +57,9 @@ class App(arcade.Window):
             dx = self.end_x - self.start_x
             dy = self.end_y - self.start_y
             angle = math.atan2(dy, dx)
-            arrow_sprite = ArrowSprite("assets/img/arrow.png", self.archer.center_x, self.archer.center_y, x, y)
+            arrow_sprite = ArrowSprite("assets/img/arrow.png", self.archer.center_x, self.archer.center_y, x, y, self.space)
             arrow_sprite.rotation = math.degrees(angle)
-            arrow_speed = 10
+            arrow_speed = 2
             arrow_sprite.change_x = math.cos(self.angle) * arrow_speed
             arrow_sprite.change_y = math.sin(self.angle) * arrow_speed
             self.arrow_group.append(arrow_sprite)
