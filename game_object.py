@@ -23,7 +23,6 @@ class ArrowSprite(arcade.Sprite):
         self.center_y = start_y
         self.target_x = end_x
         self.target_y = end_y
-        self.speed = 5
         self.damage = 0
         
         # Calcular el ángulo y la distancia para el lanzamiento

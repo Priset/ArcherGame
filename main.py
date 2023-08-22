@@ -16,7 +16,6 @@ class App(arcade.Window):
         self.archer = Archer("assets/img/archer.png", 100, 100)
         self.target = Target("assets/img/target.png", 600, 100)
         self.arrow_group = arcade.SpriteList()  
-        self.draw_line = False
         self.start_x = 0
         self.start_y = 0
         self.end_x = 0
@@ -31,14 +30,16 @@ class App(arcade.Window):
         self.space.gravity = (0, -900)
         self.target_shapes = []
         self.create_boundaries()
+        self.target_speed = 1  # Velocidad del movimiento del objetivo
+        self.target_direction = random.choice([-1, 1])  # Dirección inicial del movimiento en X y Y
+        self.target_x_speed = self.target_speed * self.target_direction
+        self.target_y_speed = self.target_speed * self.target_direction
 
     def on_draw(self):
         arcade.start_render()
         arcade.draw_lrwh_rectangle_textured(0, 0, WIDTH, HEIGHT, self.background)
         self.archer.draw()
         self.target.draw()
-        if self.draw_line:
-            arcade.draw_line(self.start_x, self.start_y, self.end_x, self.end_y, arcade.color.BLACK)
         self.arrow_group.draw()
         arcade.draw_text(f"Puntaje = {self.puntaje}", 10, HEIGHT - 30, arcade.color.BLACK, 14)
         arcade.draw_text(f"Flechas = {self.flechas_restantes}", 10, HEIGHT - 50, arcade.color.BLACK, 14)
@@ -63,6 +64,16 @@ class App(arcade.Window):
             self.target = Target("assets/img/target.png", new_x, new_y)
             self.target_shapes = self.target.shapes 
             self.target.vida = 10
+        
+         # Mover el objetivo de manera suave y controlada
+        self.target.center_x += self.target_x_speed
+        self.target.center_y += self.target_y_speed
+
+        # Cambiar la dirección del movimiento cuando el objetivo se acerca a los bordes
+        if self.target.center_x <= 50 or self.target.center_x >= WIDTH - 50:
+            self.target_x_speed *= -1
+        if self.target.center_y <= 50 or self.target.center_y >= HEIGHT - 50:
+            self.target_y_speed *= -1
         
         if self.flechas_restantes == 0 and self.puntaje >= 0:
             self.show_total_score = True  # Mostrar el mensaje de Puntaje Total
