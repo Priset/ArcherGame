@@ -33,29 +33,28 @@ class ArrowSprite(arcade.Sprite):
         
         # Configurar físicas y movimiento de Pymunk
         mass = 1
-        radius = 10
-        moment = pymunk.moment_for_circle(mass, 0, radius)
+        width = 15  # Ancho del rectángulo
+        height = 5  # Alto del rectángulo
+        moment = pymunk.moment_for_box(mass, (width, height))
         body = pymunk.Body(mass, moment)
         body.position = (self.center_x, self.center_y)
         power = self.distance * 2
         impulse = power * pymunk.Vec2d(1, 0)
         body.apply_impulse_at_local_point(impulse.rotated(self.angle))
-        shape = pymunk.Circle(body, radius)
+        shape = pymunk.Poly.create_box(body, (width, height))
         shape.elasticity = 0.8
         shape.friction = 1
         
         space.add(body, shape)
         self.body = body
         self.shape = shape
+        self.body.gravity = (0, -1200)
         
     def update(self):
         if not self.is_stuck:
-            self.center_x = self.shape.body.position.x
-            self.center_y = self.shape.body.position.y
-            self.angle = math.degrees(self.shape.body.angle)
-    
-        if self.is_stuck:
-            self.angle = math.degrees(self.shape.body.angle)
+            # Calcular el ángulo basado en la dirección de la velocidad
+            vel_angle = math.atan2(self.body.velocity.y, self.body.velocity.x)
+            self.angle = math.degrees(vel_angle)
         
     def remove_from_space(self, space):
         space.remove(self.body, self.shape)
