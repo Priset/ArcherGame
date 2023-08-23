@@ -12,7 +12,7 @@ TITLE = "Archer Game"
 class App(arcade.Window):
     def __init__(self):
         super().__init__(WIDTH, HEIGHT, TITLE)
-        self.background = arcade.load_texture("assets/img/background.jpg")
+        self.background = arcade.load_texture("assets/img/background.png")
         self.archer = Archer("assets/img/archer.png", 100, 100)
         self.target = Target("assets/img/target.png", 600, 100)
         self.arrow_group = arcade.SpriteList()  
@@ -44,7 +44,9 @@ class App(arcade.Window):
         arcade.draw_text(f"Puntaje = {self.puntaje}", 10, HEIGHT - 30, arcade.color.BLACK, 14)
         arcade.draw_text(f"Flechas = {self.flechas_restantes}", 10, HEIGHT - 50, arcade.color.BLACK, 14)
         
-        if self.show_total_score:
+        if self.puntaje == 30:
+            arcade.draw_text("GANASTE!!", WIDTH // 2, HEIGHT // 2, arcade.color.BLACK, 30, anchor_x="center")
+        elif self.show_total_score:
             arcade.draw_text(f"Puntaje Total = {self.total_score}", WIDTH // 2, HEIGHT // 2, arcade.color.BLACK, 30, anchor_x="center")
 
     def on_update(self, delta_time):
