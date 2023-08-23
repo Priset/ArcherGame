@@ -93,11 +93,8 @@ class App(arcade.Window):
                             arrow_sprite.is_stuck = True
                             arrow_sprite.stuck_timer = 1  
                             break
-                
+                        
                 arrow_sprite.change_y -= self.space.gravity[1] * delta_time
-                arrow_sprite.center_x = arrow_sprite.body.position.x
-                arrow_sprite.center_y = arrow_sprite.body.position.y
-                arrow_sprite.angle = math.degrees(arrow_sprite.body.angle)
                 
             if not arrow_sprite.is_stuck and self.target.collides_with_sprite(arrow_sprite):
                 arrow_sprite.is_stuck = True

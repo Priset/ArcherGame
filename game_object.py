@@ -46,12 +46,16 @@ class ArrowSprite(arcade.Sprite):
         space.add(body, shape)
         self.body = body
         self.shape = shape
-        self.body.gravity = (0, -1200)
+        self.body.gravity = (0, 100)
         
     def update(self):
         if not self.is_stuck:
+            self.center_x = self.body.position.x
+            self.center_y = self.body.position.y
             vel_angle = math.atan2(self.body.velocity.y, self.body.velocity.x)
             self.angle = math.degrees(vel_angle)
+            self.body.apply_force_at_local_point((0, -self.body.mass * self.body.gravity[1]), (0, 0))
+
         
     def remove_from_space(self, space):
         space.remove(self.body, self.shape)
