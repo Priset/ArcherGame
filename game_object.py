@@ -24,6 +24,7 @@ class ArrowSprite(arcade.Sprite):
         self.target_x = end_x
         self.target_y = end_y
         self.damage = 0
+        self.play_arrow_sound()
         
         dx = self.target_x - self.center_x
         dy = self.target_y - self.center_y
@@ -59,3 +60,7 @@ class ArrowSprite(arcade.Sprite):
         
     def remove_from_space(self, space):
         space.remove(self.body, self.shape)
+        
+    def play_arrow_sound(self):
+        arrow_sound = arcade.load_sound("assets/audio/arrow_shoot.mp3")
+        arcade.play_sound(arrow_sound)
