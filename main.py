@@ -26,12 +26,12 @@ class App(arcade.Window):
         self.show_total_score = False
         self.total_score = 0
         self.total_score_timer = 0
-        self.space = pymunk.Space()  # Crear el espacio de pymunk
+        self.space = pymunk.Space()  
         self.space.gravity = (0, -900)
         self.target_shapes = []
         self.create_boundaries()
-        self.target_speed = 1  # Velocidad del movimiento del objetivo
-        self.target_direction = random.choice([-1, 1])  # Dirección inicial del movimiento en X y Y
+        self.target_speed = 1
+        self.target_direction = random.choice([-1, 1]) 
         self.target_x_speed = self.target_speed * self.target_direction
         self.target_y_speed = self.target_speed * self.target_direction
 
@@ -59,29 +59,25 @@ class App(arcade.Window):
                 self.space.remove(shape)
             self.target_shapes = []
             self.puntaje += 1
-                
-            # Generar nuevas coordenadas aleatorias para el objetivo
             new_x = random.uniform(100, WIDTH - 100)
             new_y = random.uniform(100, HEIGHT - 100)
             self.target = Target("assets/img/target.png", new_x, new_y)
             self.target_shapes = self.target.shapes 
             self.target.vida = 10
         
-         # Mover el objetivo de manera suave y controlada
         self.target.center_x += self.target_x_speed
         self.target.center_y += self.target_y_speed
 
-        # Cambiar la dirección del movimiento cuando el objetivo se acerca a los bordes
         if self.target.center_x <= 50 or self.target.center_x >= WIDTH - 50:
             self.target_x_speed *= -1
         if self.target.center_y <= 50 or self.target.center_y >= HEIGHT - 50:
             self.target_y_speed *= -1
         
         if self.flechas_restantes == 0 and self.puntaje >= 0:
-            self.show_total_score = True  # Mostrar el mensaje de Puntaje Total
-            self.total_score_timer = 3  # Duración de 1 segundo
+            self.show_total_score = True  
+            self.total_score_timer = 3  
             self.total_score = self.puntaje
-            self.puntaje = 0  # Reiniciar el puntaje
+            self.puntaje = 0  
             self.flechas_restantes = 60
         
         if self.show_total_score:
@@ -93,25 +89,23 @@ class App(arcade.Window):
             if not arrow_sprite.is_stuck:
                 for shape in self.space.shapes:
                     if shape.body == arrow_sprite.body:
-                        if shape.body.position.y < 50:  # Ajusta esta coordenada según la altura del borde inferior
+                        if shape.body.position.y < 50:  
                             arrow_sprite.is_stuck = True
-                            arrow_sprite.stuck_timer = 1  # 1 segundo
+                            arrow_sprite.stuck_timer = 1  
                             break
                 
-                # Aplicar aceleración debida a la gravedad
                 arrow_sprite.change_y -= self.space.gravity[1] * delta_time
-                # Actualizar la posición y el ángulo de la flecha
                 arrow_sprite.center_x = arrow_sprite.body.position.x
                 arrow_sprite.center_y = arrow_sprite.body.position.y
                 arrow_sprite.angle = math.degrees(arrow_sprite.body.angle)
                 
             if not arrow_sprite.is_stuck and self.target.collides_with_sprite(arrow_sprite):
                 arrow_sprite.is_stuck = True
-                arrow_sprite.stuck_timer = 1  # 1 segundo
+                arrow_sprite.stuck_timer = 1  
                 self.target.vida -= arrow_sprite.damage
         
         for arrow_sprite in self.arrow_group:
-            if arrow_sprite.is_stuck:  # Si la flecha está clavada
+            if arrow_sprite.is_stuck: 
                 arrow_sprite.stuck_timer -= delta_time
                 if arrow_sprite.stuck_timer <= 0:
                     arrow_sprite.remove_from_space(self.space)
@@ -147,16 +141,14 @@ class App(arcade.Window):
             arrow_sprite.damage = 5
             self.arrow_group.append(arrow_sprite)
             arrow_sprite.is_stuck = False
-            arrow_sprite.stuck_timer = 1  # 1 segundo
+            arrow_sprite.stuck_timer = 1  
             
     def create_boundaries(self):
-        # Crear los bordes de la pantalla como segmentos estáticos
         floor = pymunk.Segment(self.space.static_body, (0, 0), (WIDTH, 0), 0)
         left_wall = pymunk.Segment(self.space.static_body, (0, 0), (0, HEIGHT), 0)
         right_wall = pymunk.Segment(self.space.static_body, (WIDTH, 0), (WIDTH, HEIGHT), 0)
         ceiling = pymunk.Segment(self.space.static_body, (0, HEIGHT), (WIDTH, HEIGHT), 0)
     
-        # Configurar colisiones
         floor.friction = 1
         left_wall.friction = 1
         right_wall.friction = 1

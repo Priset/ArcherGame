@@ -25,16 +25,14 @@ class ArrowSprite(arcade.Sprite):
         self.target_y = end_y
         self.damage = 0
         
-        # Calcular el ángulo y la distancia para el lanzamiento
         dx = self.target_x - self.center_x
         dy = self.target_y - self.center_y
         self.angle = math.atan2(dy, dx)
         self.distance = math.sqrt(dx ** 2 + dy ** 2)
-        
-        # Configurar físicas y movimiento de Pymunk
+
         mass = 1
-        width = 15  # Ancho del rectángulo
-        height = 5  # Alto del rectángulo
+        width = 15 
+        height = 5 
         moment = pymunk.moment_for_box(mass, (width, height))
         body = pymunk.Body(mass, moment)
         body.position = (self.center_x, self.center_y)
@@ -52,7 +50,6 @@ class ArrowSprite(arcade.Sprite):
         
     def update(self):
         if not self.is_stuck:
-            # Calcular el ángulo basado en la dirección de la velocidad
             vel_angle = math.atan2(self.body.velocity.y, self.body.velocity.x)
             self.angle = math.degrees(vel_angle)
         
