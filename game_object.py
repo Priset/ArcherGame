@@ -59,8 +59,3 @@ class ArrowSprite(arcade.Sprite):
         
     def remove_from_space(self, space):
         space.remove(self.body, self.shape)
-
-        
-        
-        
-

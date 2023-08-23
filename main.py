@@ -1,8 +1,8 @@
 import random
 import arcade
 import math
-
 import pymunk
+import threading
 from game_object import Archer, Target, ArrowSprite
 
 WIDTH = 800
@@ -34,6 +34,8 @@ class App(arcade.Window):
         self.target_direction = random.choice([-1, 1]) 
         self.target_x_speed = self.target_speed * self.target_direction
         self.target_y_speed = self.target_speed * self.target_direction
+        self.background_music = arcade.load_sound("assets/audio/playing.mp3")
+        self.play_background_music()
 
     def on_draw(self):
         arcade.start_render()
@@ -48,6 +50,9 @@ class App(arcade.Window):
             arcade.draw_text("GANASTE!!", WIDTH // 2, HEIGHT // 2, arcade.color.BLACK, 30, anchor_x="center")
         elif self.show_total_score:
             arcade.draw_text(f"Puntaje Total = {self.total_score}", WIDTH // 2, HEIGHT // 2, arcade.color.BLACK, 30, anchor_x="center")
+    
+    def play_background_music(self):
+            arcade.play_sound(self.background_music)
 
     def on_update(self, delta_time):
         self.space.step(1 / 60)
@@ -91,7 +96,7 @@ class App(arcade.Window):
                     if shape.body == arrow_sprite.body:
                         if shape.body.position.y < 50:  
                             arrow_sprite.is_stuck = True
-                            arrow_sprite.stuck_timer = 1  
+                            arrow_sprite.stuck_timer = 0.5  
                             break
                         
                 arrow_sprite.change_y -= self.space.gravity[1] * delta_time
@@ -152,6 +157,10 @@ class App(arcade.Window):
         ceiling.friction = 1
     
         self.space.add(floor, left_wall, right_wall, ceiling)
+        
+    def on_exit(self):
+        arcade.stop_sound(self.background_music)
+        super().on_exit()
 
 def main():
     app = App()
